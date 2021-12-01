@@ -15,7 +15,7 @@ function Registration() {
   const [password, setPassword] = useState("");
   const [usernameLog, setUsernameLog] = useState("");
   const [passwordLog, setPasswordLog] = useState("");
-  const [loginStatus, setLogingStatus] = useState(false);
+  const [loginStatus, setLogingStatus] = useState("");
 
   Axios.defaults.withCredentials = true; //must be written
 
@@ -43,21 +43,12 @@ function Registration() {
       username: usernameLog,
       password: passwordLog,
     }).then((response) => {
-      if (!response.data.auth) {
+      if (response.data.message) {
         console.log(response);
-        setLogingStatus(false);
+        setLogingStatus(response.data.message);
       } else {
-        localStorage.setItem("token", response.data.token);
-        setLogingStatus(true);
+        setLogingStatus(response.data[0].username);
       }
-    });
-  };
-
-  const userAuthenticated = () => {
-    Axios.get("http://localhost:3001/isUserAuth", {
-      headers: { "x-access-token": localStorage.getItem("token") },
-    }).then((response) => {
-      console.log(response);
     });
   };
 
@@ -100,11 +91,7 @@ function Registration() {
           />
         </Form.Group>
         <Button onClick={login}>login</Button>
-        <div>
-          {loginStatus && (
-            <Button onClick={userAuthenticated}>Check Authentication</Button>
-          )}
-        </div>
+        <div>{loginStatus}</div>=
       </Col>
     </div>
   );

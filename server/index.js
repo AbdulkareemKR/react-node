@@ -107,23 +107,6 @@ app.post("/register", (req, res) => {
   });
 });
 
-const verifyJWT = (req, res, next) => {
-  const token = req.headers["x-access-token"];
-
-  if (!token) {
-    res.send("we need a token");
-  } else {
-    jwt.verify(token, "jwtSecret", (err, decoded) => {
-      if (err) {
-        res.json({ auth: false, message: "failed to authenticate" });
-      } else {
-        res.userId = decoded.id;
-        next();
-      }
-    });
-  }
-};
-
 app.get("/isUserAuth", verifyJWT, (req, res) => {
   res.send("your are authenticated");
 });
@@ -149,14 +132,11 @@ app.post("/login", (req, res) => {
           req.session.user = result;
           res.json({ auth: true, token: token, result: result });
         } else {
-          res.send({
-            auth: false,
-            message: "username or password is incorrect",
-          });
+          res.send({ message: "username or password is incorrect" });
         }
       });
     } else {
-      res.send({ auth: false, message: "User does not exists" });
+      res.send({ message: "User does not exists" });
     }
   });
 });
