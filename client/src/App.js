@@ -1,7 +1,6 @@
 import "./App.css";
 import InformationCard from "./component/InformationCard";
 import Registration from "./component/Registration";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 function App() {
   return (
