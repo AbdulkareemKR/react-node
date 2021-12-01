@@ -1,25 +1,21 @@
 import "./App.css";
+import React, { Component } from "react";
 import InformationCard from "./component/InformationCard";
 import Registration from "./component/Registration";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-<<<<<<< HEAD
       <Router>
         <div>
           <nav></nav>
-          <Switch>
+          <Routes>
             <Route path="/registration">{<Registration />}</Route>
-            <Route path="/">{<HomePage />}</Route>
-          </Switch>
-          <Footer />
+            {/* <Route path="/homePage">{<HomePage />}</Route> */}
+          </Routes>
         </div>
       </Router>
-=======
-      {/* <InformationCard /> */}
-      <Registration />
->>>>>>> parent of de025938 (install react router dom)
     </div>
   );
 }
