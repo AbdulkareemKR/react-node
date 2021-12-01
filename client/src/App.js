@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 function App() {
   return (
     <div className="App">
+<<<<<<< HEAD
       <Router>
         <div>
           <nav></nav>
@@ -16,6 +17,10 @@ function App() {
           <Footer />
         </div>
       </Router>
+=======
+      {/* <InformationCard /> */}
+      <Registration />
+>>>>>>> parent of de025938 (install react router dom)
     </div>
   );
 }
