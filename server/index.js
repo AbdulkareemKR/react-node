@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser"); //must be written
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
+const { validateToken } = require("./middlewares/AuthMiddleware");
 
 // mysql://baa3edb8227a69:1dca83a3@us-cdbr-east-04.cleardb.com/heroku_14bd760e873f76d?reconnect=true
 // TAKE THE INFO FROM THE LINE ABOVE
@@ -20,14 +21,14 @@ const db = mysql.createPool({
 // const db = mysql.createPool({
 //   host: "localhost",
 //   user: "root",
-//   password: "password",
+//   password: "",
 //   database: "registration",
 // });
 
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
 );
@@ -38,36 +39,38 @@ app.use(express.json()); //must be written
 app.use(bodyParser.urlencoded({ extended: true })); //must be written
 
 app.get("/api/get", (req, res) => {
-  const sqlSelect = "SELECT * FROM movie_reviews";
+  const sqlSelect = "SELECT * FROM info-card";
   db.query(sqlSelect, (err, result) => {
     res.send(result);
   });
 });
 
-app.post("/api/insert", (req, res) => {
-  const movieName = req.body.movieName;
-  const movieReview = req.body.movieReview;
+app.post("/api/insert", validateToken, (req, res) => {
+  const name = req.body.name;
+  const information = req.body.information;
+  const username = req.user.username;
 
-  const sqlInsert = "INSERT INTO movie_reviews (name, review) VALUES (?,?)";
-  db.query(sqlInsert, [movieName, movieReview], (err, result) => {
+  const sqlInsert =
+    "INSERT INTO info-card (username, name, information) VALUES (?,?)";
+  db.query(sqlInsert, [username, name, information], (err, result) => {
     console.log(result);
     console.log("submitted");
   });
 });
 
-app.delete("/api/delete/:movieName", (req, res) => {
-  const deletedName = req.params.movieName;
+app.delete("/api/delete/:name", validateToken, (req, res) => {
+  const deletedName = req.params.name;
 
-  const sqlDelete = "DELETE FROM movie_reviews WHERE name = ?";
+  const sqlDelete = "DELETE FROM info-card WHERE name = ?";
   db.query(sqlDelete, deletedName, (err, result) => {
     if (err) console.log(err);
   });
 });
 
 app.put("/api/update", (req, res) => {
-  const updatedName = req.body.movieName;
-  const updatedReview = req.body.movieReview;
-  const sqlUpdate = "UPDATE movie_reviews SET review = ? WHERE name = ?";
+  const updatedName = req.body.name;
+  const updatedReview = req.body.information;
+  const sqlUpdate = "UPDATE info-card SET information = ? WHERE name = ?";
 
   db.query(sqlUpdate, [updatedReview, updatedName], (err, result) => {
     if (err) console.log(err);
@@ -148,6 +151,7 @@ app.post("/login", (req, res) => {
 
           req.session.user = result;
           res.json({ auth: true, token: token, result: result });
+          // return res.redirect("info");
         } else {
           res.send({
             auth: false,

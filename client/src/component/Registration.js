@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Axios from "axios";
 import "../App.css";
 import Spinner from "react-bootstrap/Spinner";
+import { useNavigate } from "react-router-dom";
 
 function Registration() {
   const [username, setUsername] = useState("");
@@ -18,6 +19,7 @@ function Registration() {
   const [loginStatus, setLogingStatus] = useState(false);
 
   Axios.defaults.withCredentials = true; //must be written
+  let navigate = useNavigate();
 
   useEffect(() => {
     Axios.get("http://localhost:3001/login").then((response) => {
@@ -49,6 +51,7 @@ function Registration() {
       } else {
         localStorage.setItem("token", response.data.token);
         setLogingStatus(true);
+        navigate("/info");
       }
     });
   };
